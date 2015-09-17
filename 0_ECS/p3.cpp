@@ -349,11 +349,11 @@ private:
 
         // Compile-time list of required components.
         using SignatureComponents =
-            typename Settings::template SignatureComponents<T>;
+            typename SignatureBitsets::template SignatureComponents<T>;
 
         // Compile-time list of required tags.
         using SignatureTags =
-            typename Settings::template SignatureTags<T>;
+            typename SignatureBitsets::template SignatureTags<T>;
 
         // I use a `boost::hana`-like lambda-based type iteration
         // technique to iterate over a compile-time type list.
