@@ -766,7 +766,7 @@ struct Game : Boilerplate::TestApp
 
     void update(FT mFT) override
     {
-        for(auto i(0u); i < 50; ++i)
+        for(auto i(0u); i < 40; ++i)
         {
             auto e(mgr.createIndex());
 
