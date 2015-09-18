@@ -2,6 +2,9 @@
 // License: MIT License | http://opensource.org/licenses/MIT
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
+// This code segments shows the "boilerplate" code we're going to 
+// use.
+
 // The `Other` module will include code that deals with
 // graphics/input management and general-purpose utilities.
 #include "../Other/Other.hpp"
@@ -36,3 +39,6 @@ int main()
     Boilerplate::AppRunner<example::Game>{"ECS", 320, 240};
     return 0;
 }
+
+// In the interest of time, the `p1` and `p2` OOP implementation 
+// segments will be explained and ran very quickly.

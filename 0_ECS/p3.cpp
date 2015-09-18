@@ -5,7 +5,7 @@
 #include <memory>
 #include "../Other/Other.hpp"
 
-// Let's take another look at our hierarchy:
+// Let's take a look at our "OOP hierarchy":
 //
 //    GameObject
 //    |
