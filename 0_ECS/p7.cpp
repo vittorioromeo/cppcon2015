@@ -1168,4 +1168,4 @@ int main()
 // The implementation above is a simple example of component-based
 // design for games and applications.
 
-// Let's go back to the slides for some food for thought.
+// Let's go back to the slides for some "food for thought".
