@@ -214,21 +214,18 @@ struct SignatureBitsets
         bool, Settings::template isTag<T>()
     >;
 
-    template<typename T>
-    using SignatureElementList = typename T::TypeList;
-
-    template<typename T>
+    template<typename TSignature>
     using SignatureComponents = MPL::Filter
     <
         IsComponentFilter,
-        SignatureElementList<T>
+        TSignature
     >;
 
-    template<typename T>
+    template<typename TSignature>
     using SignatureTags = MPL::Filter
     <
         IsTagFilter,
-        SignatureElementList<T>
+        TSignature
     >;
 };
 

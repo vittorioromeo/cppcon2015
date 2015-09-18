@@ -192,32 +192,27 @@ struct SignatureBitsets
     template<typename T>
     using IsComponentFilter = std::integral_constant
     <
-        bool,
-        Settings::template isComponent<T>()
+        bool, Settings::template isComponent<T>()
     >;
 
     template<typename T>
     using IsTagFilter = std::integral_constant
     <
-        bool,
-        Settings::template isTag<T>()
+        bool, Settings::template isTag<T>()
     >;
 
-    template<typename T>
-    using SignatureElementList = typename T::TypeList;
-
-    template<typename T>
+    template<typename TSignature>
     using SignatureComponents = MPL::Filter
     <
         IsComponentFilter,
-        SignatureElementList<T>
+        TSignature
     >;
 
-    template<typename T>
+    template<typename TSignature>
     using SignatureTags = MPL::Filter
     <
         IsTagFilter,
-        SignatureElementList<T>
+        TSignature
     >;
 };
 

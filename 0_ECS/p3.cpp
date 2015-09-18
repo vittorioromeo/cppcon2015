@@ -286,24 +286,20 @@ struct SignatureBitsets
     // Let's also write some shortcut aliases for signature
     // elements filtering.
 
-    // This will return all required elements of signature `T`.
-    template<typename T>
-    using SignatureElementList = typename T::TypeList;
-
     // This will return all required components.
-    template<typename T>
+    template<typename TSignature>
     using SignatureComponents = MPL::Filter
     <
         IsComponentFilter,
-        SignatureElementList<T>
+        TSignature
     >;
 
     // This will return all required tags.
-    template<typename T>
+    template<typename TSignature>
     using SignatureTags = MPL::Filter
     <
         IsTagFilter,
-        SignatureElementList<T>
+        TSignature
     >;
 };
 
