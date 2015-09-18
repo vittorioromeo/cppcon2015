@@ -116,9 +116,6 @@ class ComponentStorage
 };
 }
 
-template<typename TSettings>
-class Manager;
-
 template
 <
     typename TComponentList,
@@ -314,18 +311,13 @@ private:
         });
     }
 
-    void initializeAllBitsets() noexcept
+public:
+    SignatureBitsetsStorage() noexcept
     {
         MPL::forTypes<SignatureList>([this](auto t)
         {
             this->initializeBitset<ECS_TYPE(t)>();
         });
-    }
-
-public:
-    SignatureBitsetsStorage() noexcept
-    {
-        initializeAllBitsets();
     }
 };
 }

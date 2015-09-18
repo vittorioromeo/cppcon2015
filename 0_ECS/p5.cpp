@@ -5,10 +5,10 @@
 #include <memory>
 #include "../Other/Other.hpp"
 
-// Things still missing:
-// * Handles
-// * Components
-// * Entity/signature matching
+// Features still missing:
+// * Component storage.
+// * Entity/signature matching.
+// * Handles.
 
 // In this code segment we'll implement component storage,
 // entity/signature matching and entity iteration.
@@ -113,9 +113,6 @@ public:
     }
 };
 }
-
-template<typename TSettings>
-class Manager;
 
 template
 <
@@ -312,18 +309,13 @@ private:
         });
     }
 
-    void initializeAllBitsets() noexcept
+public:
+    SignatureBitsetsStorage() noexcept
     {
         MPL::forTypes<SignatureList>([this](auto t)
         {
             this->initializeBitset<ECS_TYPE(t)>();
         });
-    }
-
-public:
-    SignatureBitsetsStorage() noexcept
-    {
-        initializeAllBitsets();
     }
 };
 }
@@ -703,6 +695,7 @@ public:
 
 namespace example
 {
+// Component definitions:
 struct CPosition { Vec2f value; };
 struct CVelocity { Vec2f value; };
 struct CAcceleration { Vec2f value; };
@@ -724,8 +717,10 @@ using MyComponents = ecs::ComponentList
     CPosition, CVelocity, CAcceleration, CRender, CLife
 >;
 
+// We won't need any tags for this example.
 using MyTags = ecs::TagList<>;
 
+// Signature definitions:
 using SApplyVelocity = ecs::Signature<CPosition, CVelocity>;
 using SApplyAcceleration = ecs::Signature<CVelocity, CAcceleration>;
 using SRender = ecs::Signature<CPosition, CRender>;
@@ -758,8 +753,10 @@ struct Game : Boilerplate::TestApp
 
     void update(FT mFT) override
     {
+        // Particle creation loop:
         for(auto i(0u); i < 40; ++i)
         {
+            // Create an entity an get its index.
             auto e(mgr.createIndex());
 
             auto setRndVec2([](auto& mVec, auto mX)
@@ -767,6 +764,9 @@ struct Game : Boilerplate::TestApp
                 mVec.x = ssvu::getRndR(-mX, mX);
                 mVec.y = ssvu::getRndR(-mX, mX);
             });
+
+            // Add position, velocity, acceleration, life,
+            // and shape components with random values.
 
             auto& pos(mgr.addComponent<CPosition>(e).value);
             setRndVec2(pos, 100.f);
@@ -790,9 +790,15 @@ struct Game : Boilerplate::TestApp
             ));
         }
 
+        // Match entities that have both position and velocity,
+        // then add velocity to their position.
         mgr.forEntitiesMatching<SApplyVelocity>
         ([mFT](auto, auto& cPosition, auto& cVelocity)
-        {
+        {   
+            // The components are "automatically" passed to the
+            // lambda as parameters. The unused parameter is the
+            // index of the entity. 
+
             cPosition.value += cVelocity.value * mFT;
         });
 

@@ -58,6 +58,7 @@ namespace ecs
 			md.entityBitset[getComponentBit<TComponent>()] = true;
 
 			auto& result(getComponentByDataIndex<TComponent>(md.dataIndex));
+			// TODO: call destructor of previous componentt data?
 			new (&result) TComponent(ECS_FWD(mXs)...);
 			return result;
 		}

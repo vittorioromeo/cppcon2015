@@ -366,8 +366,8 @@ private:
     }
 
 public:
-    // Lastly, we need a function that will initialize all bitsets.
-    void initializeAllBitsets() noexcept
+    // Lastly, let's initialize all bitsets on construction.
+    SignatureBitsetsStorage() noexcept
     {
         MPL::forTypes<SignatureList>([this](auto t)
         {
@@ -460,7 +460,6 @@ void runtimeTests()
     // This will be `private` in the final implementation.
     using MSBStorage = ecs::Impl::SignatureBitsetsStorage<MySettings>;
     MSBStorage msb;
-    msb.initializeAllBitsets();
 
     const auto& bS0(msb.getSignatureBitset<S0>());
     const auto& bS1(msb.getSignatureBitset<S1>());
