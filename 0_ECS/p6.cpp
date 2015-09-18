@@ -119,12 +119,6 @@ class ComponentStorage
 template<typename TSettings>
 class Manager;
 
-template<typename... TElements>
-struct Signature
-{
-    using TypeList = MPL::TypeList<TElements...>;
-};
-
 template
 <
     typename TComponentList,
@@ -133,9 +127,10 @@ template
 >
 struct Settings;
 
+template<typename... Ts> using Signature = MPL::TypeList<Ts...>;
+template<typename... Ts> using SignatureList = MPL::TypeList<Ts...>;
 template<typename... Ts> using ComponentList = MPL::TypeList<Ts...>;
 template<typename... Ts> using TagList = MPL::TypeList<Ts...>;
-template<typename... Ts> using SignatureList = MPL::TypeList<Ts...>;
 
 namespace Impl
 {

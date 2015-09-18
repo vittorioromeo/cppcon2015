@@ -94,24 +94,12 @@
 
 namespace ecs
 {
-// Components and tags require no library-side code.
-// They will be simple structs defined by the user.
+// NOTE: I've implemented a simple MPL library for this talk, but any
+// existing MPL library will do fine.
 
-// Signatures will be compile-time lists of required components
-// and tags. It is a good idea to define a variadic template
-// class that can be aliased by the user.
-
-template<typename... TElements>
-struct Signature
-{
-    // I've implemented a simple MPL library for this project,
-    // but any good MPL library will do fine.
-    using TypeList = MPL::TypeList<TElements...>;
-};
-
-// Before defining our "compile-time list" classes, let's
-// forward-declare a compile-time stateful class that will
-// contain and keep track of settings specified by the user.
+// The framework will require the user to define its components, tags
+// and signature compile-time lists in advance, and pass them to a
+// compile-time `Settings` class.
 
 template
 <
@@ -121,15 +109,20 @@ template
 >
 struct Settings;
 
-// We can then define our "list" classes.
-// These will be simple wrappers around MPL type lists.
-// A more solid implementation could use type traits and
-// base component/tag classes to make sure they get filled
-// with appropriate types.
+// Our "list classes" will be simple wrappers around MPL type lists.
+
+// Signatures will be compile-time lists of required components
+// and tags. They will be listed in an MPL type list.
+
+template<typename... Ts> using Signature = MPL::TypeList<Ts...>;
+template<typename... Ts> using SignatureList = MPL::TypeList<Ts...>;
+
+// Components and tags require no library-side code.
+// They will be simple structs defined by the user, listed in MPL
+// type lists.
 
 template<typename... Ts> using ComponentList = MPL::TypeList<Ts...>;
 template<typename... Ts> using TagList = MPL::TypeList<Ts...>;
-template<typename... Ts> using SignatureList = MPL::TypeList<Ts...>;
 
 // To actually check if an entity matches a specific signature
 // at run-time, we'll make use of `std::bitset` bit operations.
