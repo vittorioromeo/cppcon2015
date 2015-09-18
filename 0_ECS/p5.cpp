@@ -114,14 +114,6 @@ public:
 };
 }
 
-template
-<
-    typename TComponentList,
-    typename TTagList,
-    typename TSignatureList
->
-struct Settings;
-
 template<typename... Ts> using Signature = MPL::TypeList<Ts...>;
 template<typename... Ts> using SignatureList = MPL::TypeList<Ts...>;
 template<typename... Ts> using ComponentList = MPL::TypeList<Ts...>;
