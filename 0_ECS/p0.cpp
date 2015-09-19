@@ -2,7 +2,7 @@
 // License: MIT License | http://opensource.org/licenses/MIT
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
-// This code segments shows the "boilerplate" code we're going to 
+// This code segments shows the "boilerplate" code we're going to
 // use.
 
 // The `Other` module will include code that deals with
@@ -40,5 +40,5 @@ int main()
     return 0;
 }
 
-// In the interest of time, the `p1` and `p2` OOP implementation 
-// segments will be explained and ran very quickly.
+// In the interest of time, the `p1` and `p2` OOP implementation
+// segments will be explained and executed very quickly.

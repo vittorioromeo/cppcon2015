@@ -38,18 +38,15 @@
 
 namespace ecs
 {
-// Let's begin by defining some useful typedefs for the
-// data structures we're going to implement.
+// Let's begin by defining some useful typedefs for the data
+//  structures we're going to implement.
 
-// We're going to use a "strong typedef", which will make
-// sure our types are actually different and not just
-// aliases for built-in types.
+// We're going to use "strong typedefs", which will make sure our
+// types are actually different and allow us to write function
+// overloads and prevent conversion mistakes.
 
 // My implementation is similar to boost's `strong_typedef`
 // module.
-
-// This will allow us to write function overloads for
-// these types and also prevent mistakes.
 
 // Index of "real" data in component storage.
 ECS_STRONG_TYPEDEF(std::size_t, DataIndex);
@@ -289,7 +286,7 @@ private:
     // We'll need to keep track of the current size,
     // the next size and the total capacity of the manager.
 
-    // Storage capacity (allocated memory).
+    // Storage capacity (memory is allocated for `capacity` entities).
     std::size_t capacity{0};
 
     // Current size.
@@ -309,9 +306,9 @@ private:
     // bitsets.
     SignatureBitsetsStorage signatureBitsets;
 
-    // Our manager class will need to grow and reallocate memory
-    // for the entity metadata storage (and for components data
-    // in the following code segments).
+    // Our manager class will need to grow and reallocate memory for
+    // the entity metadata storage (and for components data in the
+    // following code segments).
 
     // Let's define some helper methods that will deal with memory
     // growth.
@@ -328,12 +325,11 @@ private:
         {
             auto& e(entities[i]);
 
-            // When inititialized, entity metadata will
-            // point to data with index equal to its own.
+            // When inititialized, entity metadata will point to data
+            // with index equal to its own.
             e.dataIndex = i;
 
-            // Remove all components/tags and set entity to
-            // dead.
+            // Remove all components/tags and set entity to dead.
             e.bitset.reset();
             e.alive = false;
         }
@@ -343,8 +339,8 @@ private:
 
     void growIfNeeded()
     {
-        // If we already have enough space to hold all newly
-        // created entities, we can exit the function early.
+        // If we already have enough space to hold all newly created
+        // entities, we can exit the function early.
         if(capacity > sizeNext) return;
 
         // Otherwise, we grow by a fixed amount.
@@ -352,7 +348,7 @@ private:
     }
 
     // Let's define some safe methods to retrieve entities via
-    // `EntityIndex` instances.
+    // `EntityIndex`.
 
     auto& getEntity(EntityIndex mI) noexcept
     {
@@ -373,10 +369,8 @@ public:
         growTo(100);
     }
 
-    // Let's also start defining the basic user interface
-    // that will interact with entities via `EntityIndex`.
-    // Handles will be implemented in the following code
-    // segments.
+    // Let's also start defining the basic user interface that will
+    // interact with entities via `EntityIndex`.
 
     // These methods are pretty self-explanatory.
 
@@ -389,6 +383,9 @@ public:
     {
         getEntity(mI).alive = false;
     }
+
+    // Adding, removing and checking tags consists in simple bitset
+    // operations.
 
     template<typename T>
     auto hasTag(EntityIndex mI) const noexcept
@@ -411,6 +408,10 @@ public:
         getEntity(mI).bitset[Settings::template tagBit<T>()] = false;
     }
 
+    // Checking and removing components are simple bitset operations,
+    // as well. `addComponent` and `getComponent` will be implemented
+    // after coding the component data storage.
+
     template<typename T>
     auto hasComponent(EntityIndex mI) const noexcept
     {
@@ -419,8 +420,6 @@ public:
             [Settings::template componentBit<T>()];
     }
 
-    // `addComponent` and `getComponent` will be implemented after
-    // coding the component data storage.
     template<typename T, typename... TArgs>
     void addComponent(EntityIndex mI, TArgs&&... mXs) noexcept;
 
@@ -435,8 +434,8 @@ public:
             [Settings::template componentBit<T>()] = false;
     }
 
-    // Let's now implement a method that will allow the user
-    // to create new entities. It will return an `EntityIndex`.
+    // Let's now implement a method that will allow the user to create
+    // new entities. It will return an `EntityIndex`.
 
     auto createIndex()
     {
@@ -462,23 +461,28 @@ public:
 
     void clear() noexcept
     {
-        for(auto i(0u); i < sizeNext; ++i)
-            entities[i].alive = false;
+        for(auto i(0u); i < capacity; ++i)
+        {
+            auto& e(entities[i]);
+
+            e.dataIndex = i;
+            e.bitset.reset();
+            e.alive = false;
+        }
 
         size = sizeNext = 0;
     }
 
     // Now we'll implement the `refresh()` method.
-    // It will consist in a "interface" function calling
-    // an inner implementation function if required.
+    // It will consist in a "interface" function calling an inner 
+    // implementation function if required.
 
-    // The algorithm is quite simple but requires some
-    // explanation.
+    // The algorithm is quite simple but requires some explanation.
 
     void refresh() noexcept
     {
-        // If no new entities have been created, set
-        // `size` to `0` and exit early.
+        // If no new entities have been created, set `size` to `0` 
+        // and exit early.
         if(sizeNext == 0)
         {
             size = 0;
@@ -503,11 +507,12 @@ public:
 private:
     auto refreshImpl() noexcept
     {
-        // The algorithm works thanks to two indices.
+        // The algorithm is implemented using two indices.
         // * `iD` looks for dead entities, starting from the left.
         // * `iA` looks for alive entities, starting from the right.
 
-        // Newly created entities will always be in the right.
+        // Newly created entities will always be at the end of the
+        // vector.
 
         // Alive entities found on the right will be swapped with
         // dead entities found on the left - this will re-arrange
@@ -557,7 +562,7 @@ private:
                 if(iA <= iD) return iD;
             }
 
-            // If we arrive here, we have found two entities that
+            // If we arrived here, we have found two entities that
             // need to be swapped.
 
             // `iA` points to an alive entity, towards the right of
@@ -617,9 +622,9 @@ public:
 }
 
 // We're still missing quite a few things:
-// * Handles
-// * Components
-// * Entity/signature matching
+// * Handles.
+// * Components.
+// * Entity/signature matching.
 
 // Before implementing those things, let's run some tests:
 namespace tests
@@ -678,6 +683,8 @@ void runtimeTests()
     mgr.delTag<T0>(i0);
     assert(!mgr.hasTag<T0>(i0));
 
+    // Notice how the "entity count" stays to zero until we call the
+    // `refresh()` method.
     assert(mgr.getEntityCount() == 0);
 
     mgr.refresh();

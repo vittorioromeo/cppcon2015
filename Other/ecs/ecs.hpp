@@ -22,3 +22,5 @@
 
 // TODO: 
 // null slim/fat handles 
+
+// use pointers instead of indices in refresh() ?

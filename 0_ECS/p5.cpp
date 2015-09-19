@@ -31,8 +31,8 @@ struct Entity
     bool alive;
 };
 
-// Let's implement component storage.
-// It will be instantiated inside the manager class.
+// Let's implement the `ComponentStorage` class.
+// It will be instantiated inside the manager.
 
 template<typename TSettings>
 class ComponentStorage
@@ -44,43 +44,20 @@ private:
 
     // We want to have a single `std::vector` for every
     // component type.
-
+    
     // We know the types of the components at compile-time.
-    // What do we need? `std::tuple`!
+    // Therefore, we can use `std::tuple`.
+    
+    template<typename... Ts>
+    using TupleOfVectors = std::tuple<std::vector<Ts>...>;
 
-    // Let's begin by creating a type alias to wrap any
-    // type `T` inside an `std::vector`.
-    template<typename T>
-    using WrapInVector = std::vector<T>;
-
-    // Then we'll map all component types to `WrapInVector`.
-    // The result will be a compile-time list of `std::vector`
-    // of component types.
-    // Example:
-    //
-    //     MPL::TypeList
-    //     <
-    //         std::vector<C0>,
-    //         std::vector<C1>,
-    //         std::vector<C2>,
-    //         ...
-    //     >
-    //
-    using VectorList = MPL::Map
-    <
-        WrapInVector,
-        ComponentList
-    >;
-
-    // To get an `std::tuple` out of `VectorList`, we simply
-    // use `MPL::Tuple`.
-    using VectorTuple = MPL::Tuple<VectorList>;
+    // We need to "unpack" the contents of `ComponentList` in
+    // `TupleOfVectors`. We can do that using `MPL::Rename`.
+    MPL::Rename<TupleOfVectors, ComponentList> vectors;
 
     // That's it!
     // We have separate contiguous storage for all component
     // types.
-
-    VectorTuple vectors;
 
     // All that's left is defining a public interface for the
     // component storage.
@@ -423,6 +400,9 @@ public:
         auto& e(getEntity(mI));
         e.bitset[Settings::template componentBit<T>()] = true;
 
+        // `FWD(x)` is a macro that expands to
+        // `::std::forward<decltype(x)>(x)`.
+        
         auto& c(components.template getComponent<T>(e.dataIndex));
         new (&c) T(FWD(mXs)...);
         return c;
@@ -463,8 +443,14 @@ public:
 
     void clear() noexcept
     {
-        for(auto i(0u); i < sizeNext; ++i)
-            entities[i].alive = false;
+        for(auto i(0u); i < capacity; ++i)
+        {
+            auto& e(entities[i]);
+
+            e.dataIndex = i;
+            e.bitset.reset();
+            e.alive = false;
+        }
 
         size = sizeNext = 0;
     }
@@ -523,17 +509,13 @@ public:
         {
             if(matchesSignature<T>(i))
             {
-                // Hmm...
-
                 // If an entity matches a specific signature, we
                 // know the component types that the entity will
                 // have.
 
-                // So, why not expand references to those component
-                // types directly in the function call?
-
-                // It would save a lot of unnecessary boilerplate
-                // user code!
+                // So, we'll expand references to those component
+                // types directly in the function call, saving 
+                // unnecessary boilerplate user code.
 
                 expandSignatureCall<T>(i, mFunction);
             }

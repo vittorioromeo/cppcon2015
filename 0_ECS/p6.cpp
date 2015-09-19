@@ -95,9 +95,10 @@ class ComponentStorage
         using Settings = TSettings;
         using ComponentList = typename Settings::ComponentList;
 
-        template<typename T> using WrapInVector = std::vector<T>;
-        using VectorList = MPL::Map<WrapInVector, ComponentList>;
-        MPL::Tuple<VectorList> vectors;
+        template<typename... Ts>
+        using TupleOfVectors = std::tuple<std::vector<Ts>...>;
+
+        MPL::Rename<TupleOfVectors, ComponentList> vectors;
 
     public:
         void grow(std::size_t mNewCapacity)
@@ -628,8 +629,7 @@ public:
 
     void clear() noexcept
     {
-        // Let's re-initialize everything during
-        // a `clear()` call.
+        // Let's re-initialize handles during `clear()`.
 
         for(auto i(0u); i < capacity; ++i)
         {
@@ -964,6 +964,7 @@ struct Game : Boilerplate::TestApp
             cRender.shape.setSize(Vec2f{l, l});
         });
 
+        // "Erase-remove_if" all invalid handles.
         trackedParticles.erase
         (
             std::remove_if
@@ -975,6 +976,7 @@ struct Game : Boilerplate::TestApp
             std::end(trackedParticles)
         );
 
+        // Make all tracked particles move towards east.
         for(auto& h : trackedParticles)
         {
             auto& vel(mgr.getComponent<CVelocity>(h).value);

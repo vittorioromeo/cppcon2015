@@ -109,6 +109,20 @@ template
 >
 struct Settings;
 
+// Example:
+/*
+    using MyComponents = ComponentList<...>;
+    using MyTags = TagList<...>;
+    using MySignatures = SignatureList<...>;
+
+    using MySettings = Settings
+    <
+        MyComponents,
+        MyTags,
+        MySignatures
+    >;
+*/
+
 // Our "list classes" will be simple wrappers around MPL type lists.
 
 // Signatures will be compile-time lists of required components
@@ -235,6 +249,7 @@ struct Settings
     template<typename T>
     static constexpr std::size_t tagBit() noexcept
     {
+        // Tag bits will be stored towards the end of the bitset.
         return componentCount() + tagID<T>();
     }
 };
@@ -347,9 +362,18 @@ private:
         // I use a `boost::hana`-like lambda-based type iteration
         // technique to iterate over a compile-time type list.
 
-        // The following calls to `forTypes` will simply execute
-        // the body of the lambda for every type contained in the
-        // passed compile-time type list.
+        // The following calls to `forTypes` will simply execute the
+        // body of the lambda for every type contained in the passed 
+        // compile-time type list.
+
+        // `t` will be an instance of a simple `MPL::Type` wrapper:
+        /*
+            template<typename T>
+            struct Type
+            {
+                using type = T;
+            };
+        */
 
         MPL::forTypes<SignatureComponents>([this, &b](auto t)
         {
@@ -456,10 +480,7 @@ static_assert(std::is_same
 void runtimeTests()
 {
     using Bitset = typename MySignatureBitsets::Bitset;
-
-    // This will be `private` in the final implementation.
-    using MSBStorage = ecs::Impl::SignatureBitsetsStorage<MySettings>;
-    MSBStorage msb;
+    ecs::Impl::SignatureBitsetsStorage<MySettings> msb;
 
     const auto& bS0(msb.getSignatureBitset<S0>());
     const auto& bS1(msb.getSignatureBitset<S1>());

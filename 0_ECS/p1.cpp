@@ -23,8 +23,8 @@
 // * Bullet
 // * PlayerBullet
 
-// Following a traditional object-oriented approach, we're going to 
-// have a base `GameObject` class with `virtual` `update(FT)` and 
+// Following a traditional object-oriented approach, we're going to
+// have a base `GameObject` class with `virtual` `update(FT)` and
 // `draw()` methods.
 
 // Let's start by implementing that.
@@ -64,7 +64,7 @@ private:
     std::vector<std::unique_ptr<GameObject>> objects;
 
 public:
-    // Create an object of type `T` and emplace it inside the main 
+    // Create an object of type `T` and emplace it inside the main
     // container.
     template<typename T, typename... TArgs>
     auto& emplace(TArgs&&... mArgs)

@@ -48,9 +48,10 @@ private:
     using Settings = TSettings;
     using ComponentList = typename Settings::ComponentList;
 
-    template<typename T> using WrapInVector = std::vector<T>;
-    using VectorList = MPL::Map<WrapInVector, ComponentList>;
-    MPL::Tuple<VectorList> vectors;
+    template<typename... Ts>
+    using TupleOfVectors = std::tuple<std::vector<Ts>...>;
+        
+    MPL::Rename<TupleOfVectors, ComponentList> vectors;
 
 public:
     void grow(std::size_t mNewCapacity)
