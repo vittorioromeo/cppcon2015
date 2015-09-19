@@ -43,6 +43,9 @@ static_assert(!AllTrueCPP14<false, false, false>{}, "");
 template<bool... Ts>
 using AllTrueCPP17 = std::integral_constant<bool, (Ts && ...)>;
 
+// (Ideally, we would use `bool_constant`, in a C++17-compliant
+// standard library implementation.)
+
 static_assert(AllTrueCPP17<>{}, "");
 static_assert(AllTrueCPP17<true, true, true>{}, "");
 static_assert(!AllTrueCPP17<true, true, false>{}, "");
