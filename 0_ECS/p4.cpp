@@ -39,7 +39,7 @@
 namespace ecs
 {
 // Let's begin by defining some useful typedefs for the data
-//  structures we're going to implement.
+// structures we're going to implement.
 
 // We're going to use "strong typedefs", which will make sure our
 // types are actually different and allow us to write function
@@ -569,7 +569,7 @@ private:
             // the vector.
             assert(entities[iA].alive);
 
-            // `iD` points to a ded entity, towards the left of the
+            // `iD` points to a dead entity, towards the left of the
             // vector.
             assert(!entities[iD].alive);
 
