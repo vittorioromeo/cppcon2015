@@ -135,6 +135,18 @@ template<typename... Ts> using SignatureList = MPL::TypeList<Ts...>;
 // They will be simple structs defined by the user, listed in MPL
 // type lists.
 
+// Example:
+/*
+    struct C0 { int foo; };
+    struct C1 { float bar; };
+    struct T0 { };
+    struct T1 { };
+
+    using MyComponents = ComponentList<C0, C1>;
+    using MyTags = TagList<T0, T1>;
+    
+*/
+
 template<typename... Ts> using ComponentList = MPL::TypeList<Ts...>;
 template<typename... Ts> using TagList = MPL::TypeList<Ts...>;
 
