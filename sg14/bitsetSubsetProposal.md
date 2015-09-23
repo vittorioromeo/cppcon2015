@@ -1,4 +1,5 @@
 # `std::bitset` inclusion test methods
+Vittorio Romeo | [http://vittorioromeo.info](http://vittorioromeo.info)
 
 ## Table of contents
 
