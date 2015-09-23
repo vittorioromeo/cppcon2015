@@ -58,9 +58,10 @@ auto a_includes_b(a.is_subset_of(b));
 
 ## Motivation and scope
 
-One of the strongest points about C++ is the possibility of having cost-free abstractions.
-Abstractions make code easier to write and read.
-Cost-free abstraction make the code more performant.
+One of the strongest points about C++ is the possibility of having **cost-free abstractions**.
+
+* Abstractions make code easier to write and read.
+* Cost-free abstractions require no additional runtime overhead.
 
 The proposal of adding a dedicated inclusion test method to `std::bitset` builds upon both these benefits:
 * The added abstraction of a method which closely follows the mathematical operation is clear and intuitive.
@@ -69,7 +70,8 @@ The proposal of adding a dedicated inclusion test method to `std::bitset` builds
 
 ## Impact on the Standard
 
-This proposal is a pure extension on `std::bitset`'s interface. No core language changes are required, no additional library modules are required.
+This proposal is a pure extension on `std::bitset`'s interface. 
+No core language changes are required, no additional library modules are required.
 
 
 ## Design decisions and future considerations
@@ -102,6 +104,12 @@ template<size_t N> class bitset {
 }
 ```
 
+Another possible future addition is the "proper" version of the proposed methods:
+
+* `bitset::is_proper_subset_of(const bitset&)`
+* `bitset::is_proper_superset_of(const bitset&)`
+
+The above "proper" methods would return `false` if the bitsets were equal.
 
 
 ## Proposed wording
@@ -155,7 +163,7 @@ bool bitset<N>::is_superset_of(const bitset<N>& rhs) const noexcept {
 
 ## Acknowledgements
 
-...
+*(TODO) ...*
 
 
 ## References
