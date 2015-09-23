@@ -6,7 +6,7 @@
 * [Motivation and scope](#motivation-and-scope)
 * [Impact on the Standard](#impact-on-the-standard)
 * [Design decisions and future considerations](#design-decisions-and-future-considerations)
-* [Proposed Wording](#proposed-wording)
+* [Proposed wording](#proposed-wording)
 * [Example implementation](#example-implementation)
 * [Acknowledgements](#acknowledgments)
 * [References](#references)
@@ -18,8 +18,8 @@
 The `std::bitset` class provided by the standard library can be used to model the mathematical "set" structure, which represents a collection of distinct objects.
 
 * Every bit represents a distinct object.
-* If the nth bit is `1`, the nth object is present in the set.
-* Otherwise, the nth object is not present in the set.
+* If the *nth* bit is `1`, the *nth* object is present in the set.
+* Otherwise, the *nth* object is not present in the set.
 
 Existing operators and methods allow us to perform common set operations:
 * The `&` "bitwise and" operator represents intersection.
@@ -32,23 +32,21 @@ Two missing set operations that can be very useful are related to the concept of
 * If A is a subset of B, but A is not equal to B, then A is a proper (or strict) subset of B.
 * If A is a subset of B, but A is not equal to B, then B is a proper (or strict) superset of A.
 
-Checking if a bitset is a subset of another is currently possible by combining existing operators - unfortunately this solution prevents possible short-circuiting optimizations and reduces code clarity.
+Checking if a bitset is a subset of another is currently possible by combining existing operators - unfortunately this solution does not guarantee possible short-circuiting optimizations and isn't ideal in terms of code clarity and readability.
 
-```
+```cxx
 // Current solution:
 std::bitset<256> a, b;
 auto a_includes_b(a & b == b);
 ```
 
-If the bitsets are multi-word, it is not guaranteed that the code above will be optimized to return `false` early if one of the words does not match (by short-circuiting).
+If the bitsets are multi-word, it is not guaranteed that the code above will be optimized to return `false` as early as possible if one of the words does not match (by short-circuiting).
 
 This document proposes the addition of two new methods to `std::bitset`:
-* `std::bitset::is_subset_of`.
-* `std::bitset::is_superset_of`.
+* `bitset::is_subset_of(const bitset&)`.
+* `bitset::is_superset_of(const bitset&)`.
 
-The name is self explanatory: the method returns `true` if a bitset is a subset of another one.
-Having a dedicated method would allow implementations to explicitly short-circuit.
-
+The names are self-explanatory, and implementations could explicitly short-circuit for optimal performance.
 
 ```
 // Proposed solution:
@@ -105,7 +103,7 @@ template<size_t N> class bitset {
 
 
 
-## Proposed Wording
+## Proposed wording
 
 Add to <<<standard id here>>>, <bitset> synopsis:
 
