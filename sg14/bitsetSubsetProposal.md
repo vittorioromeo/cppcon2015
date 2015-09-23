@@ -43,12 +43,16 @@ auto a_includes_b(a & b == b);
 If the bitsets are multi-word, it is not guaranteed that the code above will be optimized to return `false` as early as possible if one of the words does not match (by short-circuiting).
 
 This document proposes the addition of two new methods to `std::bitset`:
-* `bitset::is_subset_of(const bitset&)`.
-* `bitset::is_superset_of(const bitset&)`.
+* ```cxx
+  bitset::is_subset_of(const bitset&)
+  ```
+* ```cxx
+  bitset::is_superset_of(const bitset&)
+  ```
 
 The names are self-explanatory, and implementations could explicitly short-circuit for optimal performance.
 
-```
+```cxx
 // Proposed solution:
 std::bitset<256> a, b;
 auto a_includes_b(a.is_subset_of(b));
@@ -82,7 +86,7 @@ One way of dealing with the issue, that would also maintain consistency with exi
 Following N2050's original ideas, the addition of `is_subset_of` can later be expanded adding an additional argument for an offset, or with overloads for bitsets with different size.
 Having an offset argument would allow meaningful set operations between bitsets of different sizes.
 
-```
+```cxx
 namespace std {
 template<size_t N> class bitset {
     // ...
@@ -107,7 +111,7 @@ template<size_t N> class bitset {
 
 Add to <<<standard id here>>>, <bitset> synopsis:
 
-```
+```cxx
 namespace std {
 template<size_t N> class bitset {
 public:
@@ -131,7 +135,7 @@ public:
 
 ## Example implementation
 
-```
+```cxx
 namespace std {
 
 template<size_t N>
