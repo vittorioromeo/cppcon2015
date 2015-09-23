@@ -43,12 +43,9 @@ auto a_includes_b(a & b == b);
 If the bitsets are multi-word, it is not guaranteed that the code above will be optimized to return `false` as early as possible if one of the words does not match (by short-circuiting).
 
 This document proposes the addition of two new methods to `std::bitset`:
-* ```cxx
-  bitset::is_subset_of(const bitset&)
-  ```
-* ```cxx
-  bitset::is_superset_of(const bitset&)
-  ```
+
+* `bitset::is_subset_of(const bitset&)`
+* `bitset::is_superset_of(const bitset&)`
 
 The names are self-explanatory, and implementations could explicitly short-circuit for optimal performance.
 
