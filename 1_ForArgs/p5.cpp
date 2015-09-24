@@ -33,7 +33,7 @@ struct forNArgsImpl;
 template<std::size_t TArity, typename TF, typename... Ts>
 void forNArgs(TF&& mFn, Ts&&... mXs)
 {
-    // The total number of arguments can be retrieved with the 
+    // The total number of arguments can be retrieved with the
     // `sizeof...` operator.
     constexpr auto numberOfArgs(sizeof...(Ts));
 
@@ -44,7 +44,7 @@ void forNArgs(TF&& mFn, Ts&&... mXs)
     // Call the implementation function with...
     forNArgsImpl
     <
-        // ...a sequence from `0` to the number of `mFn` calls that 
+        // ...a sequence from `0` to the number of `mFn` calls that
         // will be executed.
         // (`numberOfArgs` divided by `TArity`)
         std::make_index_sequence<numberOfArgs / TArity>,
@@ -123,12 +123,12 @@ struct forNArgsImpl
         */
     }
 
-    // `execN` simply calls the function getting the correct elements 
+    // `execN` simply calls the function getting the correct elements
     // from the tuple containing the forwarded arguments.
     template<std::size_t TNBase, typename TF, typename... Ts>
     static void execN(TF&& mFn, const std::tuple<Ts...>& mXs)
     {
-        // `TNBase` is the base index of the tuple elements we're 
+        // `TNBase` is the base index of the tuple elements we're
         // going to get.
 
         // `Cs...` gets expanded from 0 to the number of arguments
@@ -138,7 +138,7 @@ struct forNArgsImpl
             std::get<TNBase + TNArity>(mXs)...
         );
 
-        // Example expansion of `execN` for the previous binary 
+        // Example expansion of `execN` for the previous binary
         // function example called with 4 arguments:
         /*
             auto fn([](auto x, auto y){ return x + y; });

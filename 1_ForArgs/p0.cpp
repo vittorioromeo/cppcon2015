@@ -5,7 +5,7 @@
 #include <iostream>
 #include <initializer_list>
 
-// Welcome to my talk: 
+// Welcome to my talk:
 // "`for_each_argument` explained and expanded".
 
 // During this presentation we'll take a look at a very interesting

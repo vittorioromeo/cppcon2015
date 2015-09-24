@@ -17,7 +17,7 @@ void forArgs(TF&& mFn, Ts&&... mArgs)
     };
 }
 
-// This code segments shows another interesting use case: iteration 
+// This code segments shows another interesting use case: iteration
 // over `std::tuple` elements.
 
 // Example use case: `forTuple` function.
@@ -25,7 +25,7 @@ void forArgs(TF&& mFn, Ts&&... mArgs)
 // We can use `forArgs` as a building block for an `std::tuple`
 // element iteration function.
 
-// To do so, we require an helper function that expands the elements 
+// To do so, we require an helper function that expands the elements
 // of the `std::tuple` into a function call.
 
 // The following helper function was written roughly following paper
@@ -34,7 +34,7 @@ void forArgs(TF&& mFn, Ts&&... mArgs)
 // You can find the paper at the following address:
 // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3802.pdf
 
-// Many similar implementations of the same function can be easily 
+// Many similar implementations of the same function can be easily
 // found online.
 
 // `apply` is also available in the `std::experimental` namespace.
@@ -42,17 +42,17 @@ void forArgs(TF&& mFn, Ts&&... mArgs)
 
 // ------------------------------------------------------------------
 
-// `apply` is composed by an `applyImpl` implementation function and 
+// `apply` is composed by an `applyImpl` implementation function and
 // an `apply` interface function.
 
-// Let's start by defining the "impl" function. 
+// Let's start by defining the "impl" function.
 // Here we see another way of matching `index_sequence` instances,
 // using anonymous function arguments.
 template<typename TF, typename TTpl, std::size_t... TIs>
-decltype(auto) applyImpl(TF&& mFn, TTpl&& mTpl, 
+decltype(auto) applyImpl(TF&& mFn, TTpl&& mTpl,
     std::index_sequence<TIs...>)
-{   
-    // The `applyImpl` function calls `mFn` once, expanding the 
+{
+    // The `applyImpl` function calls `mFn` once, expanding the
     // contents of the `mTpl` tuple as the function parameters.
     return std::forward<TF>(mFn)
     (
@@ -72,8 +72,8 @@ template<typename TF, typename TTpl>
 decltype(auto) apply(TF&& mFn, TTpl&& mTpl)
 {
     // `applyImpl` requires an index sequence that goes from `0` to
-    // the number of tuple items. 
-    // We can build that using `std::make_index_sequence` and 
+    // the number of tuple items.
+    // We can build that using `std::make_index_sequence` and
     // `std::tuple_size`.
     using Indices = std::make_index_sequence
     <
@@ -90,7 +90,7 @@ decltype(auto) apply(TF&& mFn, TTpl&& mTpl)
 
 // ------------------------------------------------------------------
 
-// `forTuple` is a function that takes a callable object and an 
+// `forTuple` is a function that takes a callable object and an
 // `std::tuple` as its parameters.
 
 // It then calls the passed function individually passing every
@@ -99,7 +99,7 @@ decltype(auto) apply(TF&& mFn, TTpl&& mTpl)
 template<typename TFn, typename TTpl>
 void forTuple(TFn&& mFn, TTpl&& mTpl)
 {
-    // We basically expand the tuple into a function call to a 
+    // We basically expand the tuple into a function call to a
     // variadic polymorphic lambda with `apply`, which in turn passes
     // the expanded tuple elements to `forArgs`, one by one...
     // ...which in turn calls `mFn` with every single tuple element

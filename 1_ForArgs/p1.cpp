@@ -18,8 +18,8 @@ void forArgs(TF&& mFn, Ts&&... mArgs)
     // but any "brace-initializable" container works, like C-style
     // arrays. (Examples: `bool[]`, `int[]`)
 
-    // These contexts guarantee that the arguments will be evaluated 
-    // in the correct order, unlike a generic variadic lambda, for 
+    // These contexts guarantee that the arguments will be evaluated
+    // in the correct order, unlike a generic variadic lambda, for
     // example.
 
     return (void) std::initializer_list<int>

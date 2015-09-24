@@ -40,7 +40,7 @@ auto make_vector(TArgs&&... mArgs)
     return result;
 }
 
-// This is a simple implementation of a python-like `chain` 
+// This is a simple implementation of a python-like `chain`
 // utility that allows users to iterate over multiple containers
 // as if they were the same one.
 
@@ -71,7 +71,7 @@ int main()
     std::cout << "\n";
 
     auto compose([](auto mFn0, auto mFn1)
-    { 
+    {
         return [mFn0, mFn1](auto&&... mXs)
         {
             return mFn0(mFn1(std::forward<decltype(mXs)>(mXs)...));

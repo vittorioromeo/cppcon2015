@@ -29,7 +29,7 @@ void forArgs(TF&& mFn, Ts&&... mArgs)
 
 // `Seq0` is a compile-time index sequence.
 // It goes from `0` (inclusive) to `10` (non-inclusive).
-// You can think of `Seq0` as a compile-time list that wraps a 
+// You can think of `Seq0` as a compile-time list that wraps a
 // sequence of integers in a single type.
 using Seq0 = std::make_index_sequence<10>;
 
