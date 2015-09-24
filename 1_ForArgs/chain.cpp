@@ -40,6 +40,9 @@ auto make_vector(TArgs&&... mArgs)
     return result;
 }
 
+// This is a simple implementation of a python-like `chain` 
+// utility that allows users to iterate over multiple containers
+// as if they were the same one.
 
 template<typename TF, typename... TArgs>
 void chain(TF&& mFn, TArgs&&... mArgs)
