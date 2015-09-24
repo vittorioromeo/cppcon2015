@@ -143,4 +143,5 @@ int main()
 // Before moving on, let's digress to cover a very useful C++14
 // feature: compile-time integer sequences.
 
-// This feature will be heavil used in the following code segments.
+// This feature will be heavily used in the next code segments, to 
+// implement a version of `forArgs` with generic arity.

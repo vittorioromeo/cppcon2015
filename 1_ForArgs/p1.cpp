@@ -10,15 +10,17 @@
 template<typename TF, typename... Ts>
 void forArgs(TF&& mFn, Ts&&... mArgs)
 {
-    // Instead of a generic variadic lambda, we can use an
-    // `initializer_list` to create a context where variadic
-    // parameter expansion can take place.
+    // We require a context where variadic parameter expansion can
+    // take place, so that we can expand the function call with every
+    // passed argument.
 
-    // Any "brace-initializable" container works, such as C-style
+    // We can use an `std::initializer_list` to create such context,
+    // but any "brace-initializable" container works, like C-style
     // arrays. (Examples: `bool[]`, `int[]`)
 
-    // This guarantees that the arguments will be evaluated in the
-    // correct order.
+    // These contexts guarantee that the arguments will be evaluated 
+    // in the correct order, unlike a generic variadic lambda, for 
+    // example.
 
     return (void) std::initializer_list<int>
     {
@@ -36,7 +38,7 @@ void forArgs(TF&& mFn, Ts&&... mArgs)
             mFn
             (
                 // As we're taking the variadic arguments by
-                // "universal reference", it is important
+                // "forwarding reference", it is important
                 // to use `std::forward` to correctly forward
                 // their reference types to `mFn`.
                 std::forward<Ts>(mArgs)

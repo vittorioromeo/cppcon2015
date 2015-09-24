@@ -11,7 +11,7 @@
 // of `N` arguments, where `N` is divisible by the number of total
 // arguments.
 
-// The following implementation was written by Daniel Frey.
+// The following implementation was originally written by Daniel Frey.
 
 // It's a very clever implementation that avoids compile-time
 // recursion (which can dramatically increase compilation time),
