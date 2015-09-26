@@ -1,6 +1,8 @@
 # `std::bitset` inclusion test methods
 Vittorio Romeo | [http://vittorioromeo.info](http://vittorioromeo.info)
 
+Document number: **P0125R0**
+
 ## Table of contents
 
 * [Introduction](#introduction)
