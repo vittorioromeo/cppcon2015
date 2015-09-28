@@ -11,7 +11,6 @@ Document number: **P0125R0**
 * [Design decisions and future considerations](#design-decisions-and-future-considerations)
 * [Proposed wording](#proposed-wording)
 * [Example implementation](#example-implementation)
-* [Acknowledgements](#acknowledgments)
 * [References](#references)
 
 
@@ -162,11 +161,6 @@ bool bitset<N>::is_superset_of(const bitset<N>& rhs) const noexcept {
 
 }
 ```
-
-
-## Acknowledgements
-
-*(TODO) ...*
 
 
 ## References
