@@ -6,16 +6,11 @@
 #include <iostream>
 #include <tuple>
 
-template<typename TF, typename... Ts>
+template <typename TF, typename... Ts>
 void forArgs(TF&& mFn, Ts&&... mArgs)
 {
-    return (void) std::initializer_list<int>
-    {
-        (
-            mFn(std::forward<Ts>(mArgs)),
-            0
-        )...
-    };
+    return (void)std::initializer_list<int>{
+        (mFn(std::forward<Ts>(mArgs)), 0)...};
 }
 
 // When writing template code, having contiguous compile-time integer
@@ -37,24 +32,25 @@ using Seq0 = std::make_index_sequence<10>;
 // template specializations and expand it with `...`.
 
 // Let's forward-declare a `struct` that will print an index sequence
-//to the standard output.
-template<typename>
+// to the standard output.
+template <typename>
 struct SeqPrinter;
 
 // Let's now specialize it to match an index sequence:
-template<std::size_t... TIs>
+template <std::size_t... TIs>
 struct SeqPrinter<std::index_sequence<TIs...>>
 {
     // And let's use our `forArgs` function to print the indices:
     static void print()
     {
-        forArgs
-        (
-            [](auto x){ std::cout << x << " "; },
+        forArgs(
+            [](auto x)
+            {
+                std::cout << x << " ";
+            },
 
             // We can expand the matched indices here:
-            TIs...
-        );
+            TIs...);
     }
 };
 

@@ -10,7 +10,8 @@
 #include "./Interface.hpp"
 
 // TODO:
-// * bitsets? or compile-time-generated hasComponent checks? (forTypes requires<...>, short circuiting)
+// * bitsets? or compile-time-generated hasComponent checks? (forTypes
+// requires<...>, short circuiting)
 // * vector squishing?
 // * cache stuff in systems? recalculate every refresh?
 // * own strong typedef?
@@ -20,7 +21,7 @@
 // "Fat" entity handle.
 // class FatHandle;
 
-// TODO: 
-// null slim/fat handles 
+// TODO:
+// null slim/fat handles
 
 // use pointers instead of indices in refresh() ?

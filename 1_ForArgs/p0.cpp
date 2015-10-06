@@ -25,22 +25,21 @@
 // It invokes a callable object on every passed argument.
 
 template <class F, class... Ts>
-void for_each_argument(F f, Ts&&... a) {
+void for_each_argument(F f, Ts&&... a)
+{
     (void)std::initializer_list<int>{(f(std::forward<Ts>(a)), 0)...};
 }
 
 int main()
 {
     // Prints "hello123".
-    for_each_argument
-    (
-        [](const auto& x){ std::cout << x; },
+    for_each_argument(
+        [](const auto& x)
+        {
+            std::cout << x;
+        },
 
-        "hello",
-        1,
-        2u,
-        3.f
-    );
+        "hello", 1, 2u, 3.f);
 
     std::cout << "\n";
     return 0;

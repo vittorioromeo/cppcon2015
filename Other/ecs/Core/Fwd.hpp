@@ -2,12 +2,12 @@
 
 namespace ecs
 {
-	namespace Impl
-	{
-		template<typename TSettings>
-		class Manager;
+    namespace Impl
+    {
+        template <typename TSettings>
+        class Manager;
 
-		template<typename... TStorages> 
-		class ComponentConfig;
-	}
+        template <typename... TStorages>
+        class ComponentConfig;
+    }
 }

@@ -9,16 +9,11 @@
 // Here's our `forArgs` function without any comment.
 // Doesn't look so scary anymore, does it?
 
-template<typename TF, typename... Ts>
+template <typename TF, typename... Ts>
 void forArgs(TF&& mFn, Ts&&... mArgs)
 {
-    return (void) std::initializer_list<int>
-    {
-        (
-            mFn(std::forward<Ts>(mArgs)),
-            0
-        )...
-    };
+    return (void)std::initializer_list<int>{
+        (mFn(std::forward<Ts>(mArgs)), 0)...};
 }
 
 // So, what is `forArgs` useful for?
@@ -31,7 +26,7 @@ void forArgs(TF&& mFn, Ts&&... mArgs)
 // `make_vector` will take one or more arguments and return an
 // `std::vector` containing them.
 
-template<typename... TArgs>
+template <typename... TArgs>
 auto make_vector(TArgs&&... mArgs)
 {
     // First problem: what type should we return?
@@ -67,8 +62,7 @@ auto make_vector(TArgs&&... mArgs)
 
     // Now we use `forArgs` to generate the code that emplaces the
     // items into our vector:
-    forArgs
-    (
+    forArgs(
         // Our lambda needs to capture the vector and use a
         // "forwarding reference" to correctly forward the passed
         // argument to `std::vector::emplace_back`.
@@ -79,8 +73,7 @@ auto make_vector(TArgs&&... mArgs)
             result.emplace_back(std::forward<decltype(x)>(x));
         },
 
-        std::forward<TArgs>(mArgs)...
-    );
+        std::forward<TArgs>(mArgs)...);
 
     return result;
 }
@@ -104,8 +97,7 @@ int main()
         return result;
     */
 
-    static_assert(std::is_same<decltype(v0),
-        std::vector<int>>(), "");
+    static_assert(std::is_same<decltype(v0), std::vector<int>>(), "");
 
     // Prints "12345".
     for(const auto& x : v0) std::cout << x;
@@ -116,8 +108,7 @@ int main()
     // Deduced as `std::vector<const char*>`;
     auto v1(make_vector("hello", " ", "everyone!"));
 
-    static_assert(std::is_same<decltype(v1),
-        std::vector<const char*>>(), "");
+    static_assert(std::is_same<decltype(v1), std::vector<const char*>>(), "");
 
     // Prints "hello everyone!".
     for(const auto& x : v1) std::cout << x;
@@ -130,8 +121,7 @@ int main()
     // converted to `std::string`, but not vice versa.
     auto v2(make_vector("hello", " ", std::string{"world"}));
 
-    static_assert(std::is_same<decltype(v2),
-        std::vector<std::string>>(), "");
+    static_assert(std::is_same<decltype(v2), std::vector<std::string>>(), "");
 
     // Prints "hello world".
     for(const auto& x : v2) std::cout << x;

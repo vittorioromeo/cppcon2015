@@ -21,14 +21,16 @@
 
 // Are all boolean values true? (C++14 implementation)
 
-template<bool... Ts>
-struct AllTrueCPP14 : std::true_type { };
+template <bool... Ts>
+struct AllTrueCPP14 : std::true_type
+{
+};
 
-template<bool T, bool... Ts>
-struct AllTrueCPP14
-<
-    T, Ts...
-> : std::integral_constant<bool, T && AllTrueCPP14<Ts...>{}> { };
+template <bool T, bool... Ts>
+struct AllTrueCPP14<T, Ts...>
+    : std::integral_constant<bool, T && AllTrueCPP14<Ts...>{}>
+{
+};
 
 static_assert(AllTrueCPP14<>{}, "");
 static_assert(AllTrueCPP14<true, true, true>{}, "");
@@ -40,7 +42,7 @@ static_assert(!AllTrueCPP14<false, false, false>{}, "");
 
 // Are all boolean values true? (C++17 implementation)
 
-template<bool... Ts>
+template <bool... Ts>
 using AllTrueCPP17 = std::integral_constant<bool, (Ts && ...)>;
 
 // (Ideally, we would use `bool_constant`, in a C++17-compliant
@@ -60,7 +62,7 @@ static_assert(!AllTrueCPP17<false, false, false>{}, "");
 // "Fold expressions" make many uses of `forArgs` redundant.
 // What if we want to print every argument?
 // We can simply fold over the `<<` operator as such:
-template<typename... Ts>
+template <typename... Ts>
 void printAll(Ts&&... mXs)
 {
     (std::cout << ... << mXs) << '\n';
@@ -69,14 +71,14 @@ void printAll(Ts&&... mXs)
 // Can we re-implement `forArgs` using "fold expressions"?
 // Turns out we easily can, as the comma operator `,` is supported
 // by them:
-template<typename TF, typename... Ts>
+template <typename TF, typename... Ts>
 void forArgs(TF&& mFn, Ts&&... mXs)
 {
     (mFn(mXs), ...);
 }
 
 // How about `make_vector`?
-template<typename... Ts>
+template <typename... Ts>
 auto make_vector(Ts&&... mXs)
 {
     std::vector<std::common_type_t<Ts...>> result;
@@ -92,33 +94,28 @@ auto make_vector(Ts&&... mXs)
 
 // "Third step": call `mFn` once getting the correct elements from the
 // forwarded tuple.
-template<std::size_t TIStart, typename TF, typename TTpl,
-    std::size_t... TIs>
-void forNArgsStep(TF&& mFn, TTpl&& mTpl,
-    std::index_sequence<TIs...>)
+template <std::size_t TIStart, typename TF, typename TTpl, std::size_t... TIs>
+void forNArgsStep(TF&& mFn, TTpl&& mTpl, std::index_sequence<TIs...>)
 {
     mFn(std::get<TIStart + TIs>(mTpl)...);
 }
 
 // "Second step": use a comma operator fold expression to call the
 // "third step" `numberOfArgs / TArity` times.
-template<std::size_t TArity, typename TF, typename TTpl,
-    std::size_t... TIs>
-void forNArgsExpansion(TF&& mFn, TTpl&& mTpl,
-    std::index_sequence<TIs...>)
+template <std::size_t TArity, typename TF, typename TTpl, std::size_t... TIs>
+void forNArgsExpansion(TF&& mFn, TTpl&& mTpl, std::index_sequence<TIs...>)
 {
     using SeqGet = std::make_index_sequence<TArity>;
     (forNArgsStep<TIs * TArity>(mFn, mTpl, SeqGet{}), ...);
 }
 
 // "First step / interface".
-template<std::size_t TArity, typename TF, typename... Ts>
+template <std::size_t TArity, typename TF, typename... Ts>
 void forNArgs(TF&& mFn, Ts&&... mXs)
 {
     constexpr auto numberOfArgs(sizeof...(Ts));
 
-    static_assert(numberOfArgs % TArity == 0,
-        "Invalid number of arguments");
+    static_assert(numberOfArgs % TArity == 0, "Invalid number of arguments");
 
     auto&& asTpl(std::forward_as_tuple(std::forward<Ts>(mXs)...));
 
@@ -134,10 +131,10 @@ void forNArgs(TF&& mFn, Ts&&... mXs)
 int main()
 {
     auto printWrapper([](auto... xs)
-    {
-        (std::cout << ... << xs);
-        std::cout << " ";
-    });
+        {
+            (std::cout << ... << xs);
+            std::cout << " ";
+        });
 
     // Prints "0123":
     printWrapper(0, 1, 2, 3);
@@ -156,11 +153,7 @@ int main()
     std::cout << "\n";
 
     // Prints "abc def ghi":
-    forNArgs<3>
-    (
-        printWrapper,
-        "a", "b", "c", "d", "e", "f", "g", "h", "i"
-    );
+    forNArgs<3>(printWrapper, "a", "b", "c", "d", "e", "f", "g", "h", "i");
     std::cout << "\n";
 }
 

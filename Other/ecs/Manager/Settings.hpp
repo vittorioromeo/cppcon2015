@@ -8,83 +8,83 @@
 
 namespace ecs
 {
-	namespace Impl
-	{
-		enum class CacheSettings
-		{ 
-			UseCache,
-			DontUseCache
-		};
+    namespace Impl
+    {
+        enum class CacheSettings
+        {
+            UseCache,
+            DontUseCache
+        };
 
- 
-		template
-		<
-			typename TComponentConfig, 
-			typename TSignatureConfig, 
-			typename TSystemConfig = SystemConfig<>, 
-			typename TTagConfig = TagConfig<>,
-			CacheSettings TCacheSettings = CacheSettings::DontUseCache
-		>
-		struct Settings final : Traits::SettingsTag
-		{
-			static_assert(Traits::IsComponentConfig<TComponentConfig>{}, "");
-			static_assert(Traits::IsSignatureConfig<TSignatureConfig>{}, "");
-			static_assert(Traits::IsSystemConfig<TSystemConfig>{}, "");
-			static_assert(Traits::IsTagConfig<TTagConfig>{}, "");
 
-			using ComponentConfig = TComponentConfig;
-			using SignatureConfig = TSignatureConfig;
-			using SystemConfig = TSystemConfig;
-			using TagConfig = TTagConfig;
+        template <typename TComponentConfig, typename TSignatureConfig,
+            typename TSystemConfig = SystemConfig<>,
+            typename TTagConfig = TagConfig<>,
+            CacheSettings TCacheSettings = CacheSettings::DontUseCache>
+        struct Settings final : Traits::SettingsTag
+        {
+            static_assert(Traits::IsComponentConfig<TComponentConfig>{}, "");
+            static_assert(Traits::IsSignatureConfig<TSignatureConfig>{}, "");
+            static_assert(Traits::IsSystemConfig<TSystemConfig>{}, "");
+            static_assert(Traits::IsTagConfig<TTagConfig>{}, "");
 
-			static constexpr bool useCache{TCacheSettings == CacheSettings::UseCache};
+            using ComponentConfig = TComponentConfig;
+            using SignatureConfig = TSignatureConfig;
+            using SystemConfig = TSystemConfig;
+            using TagConfig = TTagConfig;
 
-			static constexpr std::size_t componentCount{ComponentConfig::componentCount};
-			static constexpr std::size_t tagCount{TagConfig::tagCount};
-			static constexpr std::size_t bitCount{componentCount + tagCount};
+            static constexpr bool useCache{
+                TCacheSettings == CacheSettings::UseCache};
 
-			// TODO: constexpr bitset for signatures
-			using EntityBitset = std::bitset<bitCount>;
+            static constexpr std::size_t componentCount{
+                ComponentConfig::componentCount};
+            static constexpr std::size_t tagCount{TagConfig::tagCount};
+            static constexpr std::size_t bitCount{componentCount + tagCount};
 
-			static constexpr float growMultiplier{2.f};
-			static constexpr std::size_t growAmount{5};
+            // TODO: constexpr bitset for signatures
+            using EntityBitset = std::bitset<bitCount>;
 
-			template<typename TComponent>
-			static constexpr auto getComponentTypeID() noexcept
-			{				
-				return ComponentConfig::template getComponentTypeID<TComponent>();
-			}
+            static constexpr float growMultiplier{2.f};
+            static constexpr std::size_t growAmount{5};
 
-			/*template<typename TSignature>
-			static constexpr auto getSignatureTypeID() noexcept
-			{
-				static_assert(Traits::IsSignature<TSignature>{}, "");
-				return SignatureConfig::template getSignatureTypeID<TSignature>();
-			}*/
+            template <typename TComponent>
+            static constexpr auto getComponentTypeID() noexcept
+            {
+                return ComponentConfig::template getComponentTypeID<
+                    TComponent>();
+            }
 
-			template<template<typename> class TSystem>
-			static constexpr auto getSystemTypeID() noexcept
-			{				
-				return SystemConfig::template getSystemTypeID<TSystem>();
-			}
+            /*template<typename TSignature>
+            static constexpr auto getSignatureTypeID() noexcept
+            {
+                static_assert(Traits::IsSignature<TSignature>{}, "");
+                return SignatureConfig::template
+            getSignatureTypeID<TSignature>();
+            }*/
 
-			template<typename TTag>
-			static constexpr auto getTagTypeID() noexcept
-			{				
-				return TagConfig::template getTagTypeID<TTag>();
-			}
+            template <template <typename> class TSystem>
+            static constexpr auto getSystemTypeID() noexcept
+            {
+                return SystemConfig::template getSystemTypeID<TSystem>();
+            }
 
-			template<typename TComponent>
-			static constexpr auto getComponentBit() noexcept
-			{
-				return getComponentTypeID<TComponent>();
-			}
+            template <typename TTag>
+            static constexpr auto getTagTypeID() noexcept
+            {
+                return TagConfig::template getTagTypeID<TTag>();
+            }
 
-			template<typename TTag>
-			static constexpr auto getTagBit() noexcept
-			{
-				return componentCount + getTagTypeID<TTag>();
-			}
-		};
-	}
+            template <typename TComponent>
+            static constexpr auto getComponentBit() noexcept
+            {
+                return getComponentTypeID<TComponent>();
+            }
+
+            template <typename TTag>
+            static constexpr auto getTagBit() noexcept
+            {
+                return componentCount + getTagTypeID<TTag>();
+            }
+        };
+    }
 }

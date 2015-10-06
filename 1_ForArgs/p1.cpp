@@ -7,7 +7,7 @@
 // Let's rewrite the code snippet in a more organized manner, using
 // comments to make obvious what it is actually happening.
 
-template<typename TF, typename... Ts>
+template <typename TF, typename... Ts>
 void forArgs(TF&& mFn, Ts&&... mArgs)
 {
     // We require a context where variadic parameter expansion can
@@ -22,8 +22,7 @@ void forArgs(TF&& mFn, Ts&&... mArgs)
     // in the correct order, unlike a generic variadic lambda, for
     // example.
 
-    return (void) std::initializer_list<int>
-    {
+    return (void)std::initializer_list<int>{
         // Every element of the `initializer_list` is an expression
         // enclosed in round parenthesis.
         (
@@ -35,18 +34,14 @@ void forArgs(TF&& mFn, Ts&&... mArgs)
             // to an (unused) integer, which is accepted by the
             // `initializer_list`.
 
-            mFn
-            (
+            mFn(
                 // As we're taking the variadic arguments by
                 // "forwarding reference", it is important
                 // to use `std::forward` to correctly forward
                 // their reference types to `mFn`.
-                std::forward<Ts>(mArgs)
-            ),
+                std::forward<Ts>(mArgs)),
 
-            0
-        )...
-    };
+            0)...};
 }
 
 // Still confused? Everything becomes clearer with an example
@@ -88,15 +83,13 @@ std::cout << 3;
 int main()
 {
     // Prints "hello123".
-    forArgs
-    (
-        [](const auto& x){ std::cout << x; },
+    forArgs(
+        [](const auto& x)
+        {
+            std::cout << x;
+        },
 
-        "hello",
-        1,
-        2,
-        3
-    );
+        "hello", 1, 2, 3);
 
     std::cout << "\n";
     return 0;

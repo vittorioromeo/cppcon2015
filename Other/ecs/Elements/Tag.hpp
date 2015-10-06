@@ -4,13 +4,12 @@
 
 namespace ecs
 {
-	namespace Impl
-	{	
-		// Base tag class. User-defined tags must derive from this class.
-		template<typename TDerived>
-		class Tag : Traits::TagTag
-		{
-
-		};
-	}
+    namespace Impl
+    {
+        // Base tag class. User-defined tags must derive from this class.
+        template <typename TDerived>
+        class Tag : Traits::TagTag
+        {
+        };
+    }
 }

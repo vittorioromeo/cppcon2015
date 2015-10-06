@@ -6,49 +6,44 @@
 
 namespace ecs
 {
-	namespace Impl
-	{
-		namespace Storage
-		{
-			template<typename... TComponents>
-			class Map final : public Traits::StorageTag
-			{
-				template<typename...> friend class ::ecs::Impl::ComponentConfig;
-				
-				private:
-					using ComponentTuple = std::tuple<TComponents...>;
-					using ComponentTypeList = MPL::TypeList<TComponents...>;
-					using Storage = std::map<Impl::DataIndex, ComponentTuple>;
-					Storage storage;
+    namespace Impl
+    {
+        namespace Storage
+        {
+            template <typename... TComponents>
+            class Map final : public Traits::StorageTag
+            {
+                template <typename...>
+                friend class ::ecs::Impl::ComponentConfig;
 
-				public:
-					template<typename TComponentsTypeList>
-					static constexpr bool storesAll() noexcept
-					{
-						return MPL::ContainsAll
-						<
-							TComponentsTypeList,
-							ComponentTypeList
-						>{};
-					}
+            private:
+                using ComponentTuple = std::tuple<TComponents...>;
+                using ComponentTypeList = MPL::TypeList<TComponents...>;
+                using Storage = std::map<Impl::DataIndex, ComponentTuple>;
+                Storage storage;
 
-					auto& getComponentTupleByDataIndex(DataIndex mX)
-					{
-						return storage[mX];
-					}
+            public:
+                template <typename TComponentsTypeList>
+                static constexpr bool storesAll() noexcept
+                {
+                    return MPL::ContainsAll<TComponentsTypeList,
+                        ComponentTypeList>{};
+                }
 
-					void grow(std::size_t, std::size_t)
-					{
+                auto& getComponentTupleByDataIndex(DataIndex mX)
+                {
+                    return storage[mX];
+                }
 
-					}
+                void grow(std::size_t, std::size_t) {}
 
-					void swapAt(std::size_t mA, std::size_t mB) noexcept
-					{
-						const auto& temp(storage[mA]);
-						storage[mA] = storage[mB];
-						storage[mB] = temp;
-					}
-			};
-		}
-	}
+                void swapAt(std::size_t mA, std::size_t mB) noexcept
+                {
+                    const auto& temp(storage[mA]);
+                    storage[mA] = storage[mB];
+                    storage[mB] = temp;
+                }
+            };
+        }
+    }
 }

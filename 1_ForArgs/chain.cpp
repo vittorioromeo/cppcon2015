@@ -7,19 +7,14 @@
 #include <vector>
 #include <type_traits>
 
-template<typename TF, typename... Ts>
+template <typename TF, typename... Ts>
 void forArgs(TF&& mFn, Ts&&... mArgs)
 {
-    return (void) std::initializer_list<int>
-    {
-        (
-            mFn(std::forward<Ts>(mArgs)),
-            0
-        )...
-    };
+    return (void)std::initializer_list<int>{
+        (mFn(std::forward<Ts>(mArgs)), 0)...};
 }
 
-template<typename... TArgs>
+template <typename... TArgs>
 auto make_vector(TArgs&&... mArgs)
 {
     using VectorItem = std::common_type_t<TArgs...>;
@@ -27,15 +22,13 @@ auto make_vector(TArgs&&... mArgs)
 
     result.reserve(sizeof...(TArgs));
 
-    forArgs
-    (
+    forArgs(
         [&result](auto&& x)
         {
             result.emplace_back(std::forward<decltype(x)>(x));
         },
 
-        std::forward<TArgs>(mArgs)...
-    );
+        std::forward<TArgs>(mArgs)...);
 
     return result;
 }
@@ -44,19 +37,16 @@ auto make_vector(TArgs&&... mArgs)
 // utility that allows users to iterate over multiple containers
 // as if they were the same one.
 
-template<typename TF, typename... TArgs>
+template <typename TF, typename... TArgs>
 void chain(TF&& mFn, TArgs&&... mArgs)
 {
-    forArgs
-    (
+    forArgs(
         [mFn](auto& mCont)
         {
-            for(auto& x : mCont)
-                mFn(x);
+            for(auto& x : mCont) mFn(x);
         },
 
-        std::forward<TArgs>(mArgs)...
-    );
+        std::forward<TArgs>(mArgs)...);
 }
 
 int main()
@@ -66,19 +56,25 @@ int main()
     auto v3(make_vector("6", "7", "8"));
     auto v4(make_vector('9'));
 
-    auto print([](auto&& mX){ std::cout << mX << ", "; });
+    auto print([](auto&& mX)
+        {
+            std::cout << mX << ", ";
+        });
     chain(print, v1, v2, v3, v4);
     std::cout << "\n";
 
     auto compose([](auto mFn0, auto mFn1)
-    {
-        return [mFn0, mFn1](auto&&... mXs)
         {
-            return mFn0(mFn1(std::forward<decltype(mXs)>(mXs)...));
-        };
-    });
+            return [mFn0, mFn1](auto&&... mXs)
+            {
+                return mFn0(mFn1(std::forward<decltype(mXs)>(mXs)...));
+            };
+        });
 
-    auto triplicate([](auto&& mX){ return mX * 3; });
+    auto triplicate([](auto&& mX)
+        {
+            return mX * 3;
+        });
 
     chain(compose(print, triplicate), v1, v2);
     std::cout << "\n";

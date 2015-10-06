@@ -14,23 +14,23 @@
 
 namespace example
 {
-// By deriving from `Boilerplate::TestApp`, we can easily
-// define a class representing a simple game.
-struct Game : Boilerplate::TestApp
-{
-    Game(ssvs::GameWindow& mX) : Boilerplate::TestApp{mX}
+    // By deriving from `Boilerplate::TestApp`, we can easily
+    // define a class representing a simple game.
+    struct Game : Boilerplate::TestApp
     {
-        // We can print debug text with this "delegate".
-        onTxtInfoUpdate += [this](auto& oss, FT)
+        Game(ssvs::GameWindow& mX) : Boilerplate::TestApp{mX}
         {
-            oss << "Hello world!\n";
-        };
-    }
+            // We can print debug text with this "delegate".
+            onTxtInfoUpdate += [this](auto& oss, FT)
+            {
+                oss << "Hello world!\n";
+            };
+        }
 
-    // Logic can be defined by overriding the following methods.
-    void update(FT) override { }
-    void draw() override { }
-};
+        // Logic can be defined by overriding the following methods.
+        void update(FT) override {}
+        void draw() override {}
+    };
 }
 
 int main()

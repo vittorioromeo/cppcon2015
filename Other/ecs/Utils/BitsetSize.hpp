@@ -4,6 +4,6 @@
 
 namespace ecs
 {
-	template<typename T> 
-	using BitsetSize = std::integral_constant<std::size_t, T{}.size()>;
+    template <typename T>
+    using BitsetSize = std::integral_constant<std::size_t, T{}.size()>;
 }

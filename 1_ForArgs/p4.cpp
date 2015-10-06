@@ -5,16 +5,11 @@
 #include <iostream>
 #include <tuple>
 
-template<typename TF, typename... Ts>
+template <typename TF, typename... Ts>
 void forArgs(TF&& mFn, Ts&&... mArgs)
 {
-    return (void) std::initializer_list<int>
-    {
-        (
-            mFn(std::forward<Ts>(mArgs)),
-            0
-        )...
-    };
+    return (void)std::initializer_list<int>{
+        (mFn(std::forward<Ts>(mArgs)), 0)...};
 }
 
 // This code segments shows another interesting use case: iteration
@@ -48,19 +43,12 @@ void forArgs(TF&& mFn, Ts&&... mArgs)
 // Let's start by defining the "impl" function.
 // Here we see another way of matching `index_sequence` instances,
 // using anonymous function arguments.
-template<typename TF, typename TTpl, std::size_t... TIs>
-decltype(auto) applyImpl(TF&& mFn, TTpl&& mTpl,
-    std::index_sequence<TIs...>)
+template <typename TF, typename TTpl, std::size_t... TIs>
+decltype(auto) applyImpl(TF&& mFn, TTpl&& mTpl, std::index_sequence<TIs...>)
 {
     // The `applyImpl` function calls `mFn` once, expanding the
     // contents of the `mTpl` tuple as the function parameters.
-    return std::forward<TF>(mFn)
-    (
-        std::get<TIs>
-        (
-            std::forward<TTpl>(mTpl)
-        )...
-    );
+    return std::forward<TF>(mFn)(std::get<TIs>(std::forward<TTpl>(mTpl))...);
 }
 
 // Let's now define the "interface" function that will be called by
@@ -68,24 +56,19 @@ decltype(auto) applyImpl(TF&& mFn, TTpl&& mTpl,
 
 // The first parameter will be a callable object, that will be invoked
 // using the tuple's contents. The second parameter will be the tuple.
-template<typename TF, typename TTpl>
+template <typename TF, typename TTpl>
 decltype(auto) apply(TF&& mFn, TTpl&& mTpl)
 {
     // `applyImpl` requires an index sequence that goes from `0` to
     // the number of tuple items.
     // We can build that using `std::make_index_sequence` and
     // `std::tuple_size`.
-    using Indices = std::make_index_sequence
-    <
-        std::tuple_size
-        <
-            // We use `std::decay_t` here to get rid of the reference.
-            std::decay_t<TTpl>
-        >{}
-    >;
+    using Indices = std::make_index_sequence<std::tuple_size<
+        // We use `std::decay_t` here to get rid of the reference.
+        std::decay_t<TTpl>>{}>;
 
-    return applyImpl(std::forward<TF>(mFn), std::forward<TTpl>(mTpl),
-        Indices{});
+    return applyImpl(
+        std::forward<TF>(mFn), std::forward<TTpl>(mTpl), Indices{});
 }
 
 // ------------------------------------------------------------------
@@ -96,7 +79,7 @@ decltype(auto) apply(TF&& mFn, TTpl&& mTpl)
 // It then calls the passed function individually passing every
 // element of the tuple as its argument.
 
-template<typename TFn, typename TTpl>
+template <typename TFn, typename TTpl>
 void forTuple(TFn&& mFn, TTpl&& mTpl)
 {
     // We basically expand the tuple into a function call to a
@@ -105,8 +88,7 @@ void forTuple(TFn&& mFn, TTpl&& mTpl)
     // ...which in turn calls `mFn` with every single tuple element
     // individually.
 
-    apply
-    (
+    apply(
         // The callable object we will pass to `apply` is a generic
         // variadic lambda that forwards its arguments to `forArgs`.
         [&mFn](auto&&... xs)
@@ -116,25 +98,21 @@ void forTuple(TFn&& mFn, TTpl&& mTpl)
 
             // We will call the `mFn` unary function for each expanded
             // tuple element, thanks to `forArgs`.
-            forArgs
-            (
-                mFn,
-                std::forward<decltype(xs)>(xs)...
-            );
+            forArgs(mFn, std::forward<decltype(xs)>(xs)...);
         },
 
-        std::forward<TTpl>(mTpl)
-    );
+        std::forward<TTpl>(mTpl));
 }
 
 int main()
 {
     // Prints "10 hello 15 c".
-    forTuple
-    (
-        [](const auto& x){ std::cout << x << " "; },
-        std::make_tuple(10, "hello", 15.f, 'c')
-    );
+    forTuple(
+        [](const auto& x)
+        {
+            std::cout << x << " ";
+        },
+        std::make_tuple(10, "hello", 15.f, 'c'));
 
     // This is roughly equivalent to writing:
     /*

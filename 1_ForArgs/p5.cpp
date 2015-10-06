@@ -22,7 +22,7 @@
 
 // Forward declaration of the implementation function.
 // We will match two index sequences in `forNArgsImpl`.
-template<typename, typename>
+template <typename, typename>
 struct forNArgsImpl;
 
 // Main `forNArgs` function - this will be called by the user
@@ -30,7 +30,7 @@ struct forNArgsImpl;
 // `TArity` will be the number of parameters passed at once to a
 // single `mFn` function call.
 // `Ts...` is the parameter pack containing all passed arguments.
-template<std::size_t TArity, typename TF, typename... Ts>
+template <std::size_t TArity, typename TF, typename... Ts>
 void forNArgs(TF&& mFn, Ts&&... mXs)
 {
     // The total number of arguments can be retrieved with the
@@ -38,12 +38,10 @@ void forNArgs(TF&& mFn, Ts&&... mXs)
     constexpr auto numberOfArgs(sizeof...(Ts));
 
     // The number of passed arguments must be divisible by `N`.
-    static_assert(numberOfArgs % TArity == 0,
-        "Invalid number of arguments");
+    static_assert(numberOfArgs % TArity == 0, "Invalid number of arguments");
 
     // Call the implementation function with...
-    forNArgsImpl
-    <
+    forNArgsImpl<
         // ...a sequence from `0` to the number of `mFn` calls that
         // will be executed.
         // (`numberOfArgs` divided by `TArity`)
@@ -51,33 +49,28 @@ void forNArgs(TF&& mFn, Ts&&... mXs)
 
         // ...a sequence from `0` to `TArity`.
         // ("size of a group of arguments")
-        std::make_index_sequence<TArity>
-    >
-    ::exec
-    (
-        // Pass the callable object to the implementation.
-        mFn,
+        std::make_index_sequence<TArity>>::
+        exec(
+            // Pass the callable object to the implementation.
+            mFn,
 
-        // Forward the passed arguments as an `std::tuple`.
-        std::forward_as_tuple(std::forward<Ts>(mXs)...)
-    );
+            // Forward the passed arguments as an `std::tuple`.
+            std::forward_as_tuple(std::forward<Ts>(mXs)...));
 }
 
 // Specialization of the implementation function that matches the
 // generated index sequences into two `std::size_t` packs.
-template<std::size_t... TNCalls, std::size_t... TNArity>
-struct forNArgsImpl
-<
+template <std::size_t... TNCalls, std::size_t... TNArity>
+struct forNArgsImpl<
     // `TNCalls...` goes from `0` to the number of function calls.
     // (`numberOfArgs` divided by `TArity`)
     std::index_sequence<TNCalls...>,
 
     // `TNArity...` goes from `0` to the number of arguments per
     // function call (`TArity`).
-    std::index_sequence<TNArity...>
->
+    std::index_sequence<TNArity...>>
 {
-    template<typename TF, typename... Ts>
+    template <typename TF, typename... Ts>
     static void exec(TF&& mFn, const std::tuple<Ts...>& mXs)
     {
         // We can retrieve the arity again using the `sizeof...`
@@ -90,14 +83,11 @@ struct forNArgsImpl
 
         // We'll roughly use the same idea behind `forArgs` here.
 
-        (void) swallow
-        {
-            // `TNCalls...` is the sequence we are expanding here.
+        (void)swallow{// `TNCalls...` is the sequence we are expanding here.
 
             // The code inside `swallow` gets expanded to the number
             // of function calls previously calculated.
-            (execN<TNCalls * arity>(mFn, mXs), true)...
-        };
+            (execN<TNCalls * arity>(mFn, mXs), true)...};
 
         // Example expansion of the above context for a binary
         // function called with 4 arguments:
@@ -125,7 +115,7 @@ struct forNArgsImpl
 
     // `execN` simply calls the function getting the correct elements
     // from the tuple containing the forwarded arguments.
-    template<std::size_t TNBase, typename TF, typename... Ts>
+    template <std::size_t TNBase, typename TF, typename... Ts>
     static void execN(TF&& mFn, const std::tuple<Ts...>& mXs)
     {
         // `TNBase` is the base index of the tuple elements we're
@@ -133,10 +123,7 @@ struct forNArgsImpl
 
         // `Cs...` gets expanded from 0 to the number of arguments
         // per function call (`N`).
-        mFn
-        (
-            std::get<TNBase + TNArity>(mXs)...
-        );
+        mFn(std::get<TNBase + TNArity>(mXs)...);
 
         // Example expansion of `execN` for the previous binary
         // function example called with 4 arguments:
@@ -188,8 +175,7 @@ struct forNArgsImpl
 int main()
 {
     // Prints "2 4 6 8".
-    forNArgs<2>
-    (
+    forNArgs<2>(
         [](auto x, auto y)
         {
             std::cout << x * y << " ";
@@ -205,14 +191,12 @@ int main()
         2, 3,
 
         // 2 * 4 = 8
-        2, 4
-    );
+        2, 4);
 
     std::cout << "\n";
 
     // Prints "3 6 9 12".
-    forNArgs<3>
-    (
+    forNArgs<3>(
         [](auto x, auto y, auto z)
         {
             std::cout << x + y + z << " ";
@@ -228,8 +212,7 @@ int main()
         3, 3, 3,
 
         // 4 + 4 + 4 = 12
-        4, 4, 4
-    );
+        4, 4, 4);
 
     std::cout << "\n";
     return 0;
