@@ -510,7 +510,7 @@ namespace ecs
             e.bitset[Settings::template componentBit<T>()] = true;
 
             auto& c(components.template getComponent<T>(e.dataIndex));
-            new(&c) T(FWD(mXs)...);
+            c = T(FWD(mXs)...);
             return c;
         }
         template <typename T, typename... TArgs>
